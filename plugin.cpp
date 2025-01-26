@@ -25,7 +25,12 @@ bool SetEnvironmentTempPath() {
 
     // Get the path to the Documents folder
     if (SUCCEEDED(SHGetKnownFolderPath(FOLDERID_Documents, 0, NULL, &documentsPath))) {
-        bool useSecondary = wcsstr(documentsPath, L"OneDrive") != nullptr;
+        wchar_t* docPath = _wcsdup(documentsPath);
+        _wcslwr(docPath);
+
+        bool useSecondary = wcsstr(docPath, L"onedrive") != nullptr;
+
+        free(docPath);
 
         // Don't use the Documents path if it is synced to OneDrive (cloud)
         // The large temp files can easily overflow the default 5GB free allocation
